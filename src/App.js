@@ -12,11 +12,13 @@ function App(){
 
     const API_URL = "https://itunes.apple.com/search?term="
 
-   useEffect(()=>{
-   if(search){
+
+
+    const handleSearch = (e,term) => {
+      e.preventDefault()
       const fetchData = async () =>{
-        document.title =`${search} Music`
-        const response = await fetch (API_URL + search)
+        document.title =`${term} Music`
+        const response = await fetch (API_URL + term)
         const resData = await response.json()
         if(resData.results.length > 0){
           setData(resData.results)
@@ -26,12 +28,6 @@ function App(){
         console.log(resData)
       }
       fetchData()
-  }
-   },[search])
-
-    const handleSearch = (e,term) => {
-      e.preventDefault()
-      setSearch(term)
     }
 
     return (

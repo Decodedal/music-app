@@ -8,12 +8,10 @@
 
             return (
                 <form>
-                    <input ref={term} type="text" placeholder="Enter a search term here"
-                    onChange={(e)=>props.handleSearch(e, term)} />
-                    <input type="submit" />
-                    <input type="submit" value= "clear" onSubmit={(e)=>
-                        props.handleSearch(e,'')
-                    }/>
+                    <input ref={term} type="text" placeholder="Enter a search term here"/>
+                    <button onClick={(e)=>handleSearch(e, term.current.value)}>submit</button> 
+                   
+                
                 </form>
             )
         }
