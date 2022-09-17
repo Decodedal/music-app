@@ -5,7 +5,6 @@ import SearchBar from './components/SearchBar'
 import AlbumView from './components/AlbumView';
 import ArtistView from './components/ArtistView';
 import {DataContext} from './context/DataContext';
-import {SearchContext} from './context/SearchContext';
 
 function App(){
     let [search, setSearch] = useState('')
@@ -15,22 +14,27 @@ function App(){
     const API_URL = "https://itunes.apple.com/search?term="
 
 
+	useEffect(() => {
+		if(search) {
+			const fetchData = async () => {
+				document.title = `${search} Music`
+				const response = await fetch(API_URL + search)
+				const resData = await response.json()
+				if (resData.results.length > 0) {
+					return setData(resData.results)
+				} else {
+					return setMessage('Not Found')
+				}
+			}
+			fetchData()
+		}
+	}, [search])
+	
+	const handleSearch = (e, term) => {
+		e.preventDefault()
+		setSearch(term)
+	}
 
-    const handleSearch = (e,term) => {
-      e.preventDefault()
-      const fetchData = async () =>{
-        document.title =`${term} Music`
-        const response = await fetch (API_URL + term)
-        const resData = await response.json()
-        if(resData.results.length > 0){
-          setData(resData.results)
-        }else{
-          setMessage("not found")
-        }
-        console.log(resData)
-      }
-      fetchData()
-    }
 
     return (
         <div>
@@ -39,21 +43,16 @@ function App(){
             <Routes>
               <Route path ='/'element={
                 <Fragment>
-                 <SearchContext.Provider value={{
-            term: searchInput,
-            handleSearch: handleSearch
-          }}>
-            <SearchBar handleSearch/>
-            </SearchContext.Provider>
-            
-            <DataContext.Provider>
+            <SearchBar handleSearch={handleSearch}/>
+          <DataContext.Provider value={data}>
             <Gallery data={data}/>
             </DataContext.Provider>
                 </Fragment>
               }/>
-     
+            {/* <DataContext.Provider value={data}> */}
             <Route path='/album/:id' element={<AlbumView/>}/>
             <Route path='/artist/:id' element={<ArtistView/>}/>
+            {/* </DataContext.Provider> */}
             </Routes>
           </Router>
         </div>
